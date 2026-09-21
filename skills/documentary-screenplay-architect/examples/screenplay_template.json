@@ -1,0 +1,35 @@
+{
+  "title": "Tytuł Filmu Dokumentalnego",
+  "logline": "Jednozdaniowe streszczenie prowokującej tezy dokumentu.",
+  "target_duration_seconds": 300,
+  "aspect_ratio": "16:9",
+  "scenes": [
+    {
+      "id": "s01",
+      "type": "A-ROLL",
+      "act": 1,
+      "name": "Wprowadzenie: Świadek Dziejów",
+      "anchor": "swiadek_dziejow.jpg",
+      "prompt": "16:9 cinematic medium shot of the Charismatic Witness (mature 45yo man, salt-and-pepper beard, simple linen shirt, reference anchor face). He looks directly into camera lens, speaking calmly in Polish: 'Wypowiedź bohatera maksymalnie piętnaście do osiemnastu słów.'. Subtle slow push-in, 16:9.",
+      "dialogue": "Wypowiedź bohatera maksymalnie piętnaście do osiemnastu słów."
+    },
+    {
+      "id": "s02",
+      "type": "B-ROLL",
+      "act": 1,
+      "name": "Lektor: Tło historyczne i kontekst",
+      "vo_key": "vo_s02_wprowadzenie",
+      "voiceover_text": "[thoughtful] W roku tysiąc dziewięćset dziewięćdziesiątym piątym świat stanął na krawędzi nowej epoki. [pause] Wszyscy wierzyli, że to początek rewolucji.",
+      "shots": [
+        {
+          "id": "s02_a",
+          "prompt": "16:9 cinematic establishing wide shot of historical setting, authentic lighting, 35mm film grain."
+        },
+        {
+          "id": "s02_b",
+          "prompt": "16:9 macro close-up of mechanical gears moving, intricate craftsmanship, dramatic cinematic lighting."
+        }
+      ]
+    }
+  ]
+}

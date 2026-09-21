@@ -1,0 +1,81 @@
+# Environment Variables & Secrets
+.env
+.env.txt
+*.env
+*.env.local
+*.env.*.local
+credentials.json
+token.json
+session.json
+
+# Media files (audio / video / large binaries)
+*.mp4
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Large images and test dumps
+*.jpg
+*.jpeg
+*.png
+*.webp
+!skills/**/resources/*.png
+!skills/**/resources/*.jpg
+
+# Subtitles and transcription outputs
+*.srt
+*.ass
+*_transcription.json
+*words.json
+
+# Python & Environment
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Quality
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Playwright & Chrome runtime
+.playwright/
+test-results/
+playwright-report/
+chrome_profile/
+chrome-data/
+*.log
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
