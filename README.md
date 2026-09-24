@@ -9,6 +9,7 @@ Repozytorium zawiera uniwersalny, przetestowany w warunkach produkcyjnych pakiet
 
 1. **Uniwersalne Style i Gatunki Filmowe**:
    - Filmy dokumentalne i historyczne (Świadek Dziejów, rekonstrukcje, kroniki).
+   - Eseje śledcze i video podcasts (autentyczne dowody z archiwów, animacje HTML/JS Playwright, B-roll OmniFlash, styl *Szarlatani Nauki*).
    - Kino Sci-Fi i Cyberpunk (neonowe metropolie, HUD-y, technologia przyszłości).
    - Reklamy produktowe i tech-minimalizm (studio render look, dynamiczne światło).
    - Thriller, Noir i Kryminał (mroczne zaułki, deszcz, kontrasty).
@@ -48,6 +49,7 @@ Repozytorium zawiera uniwersalny, przetestowany w warunkach produkcyjnych pakiet
 | **`documentary-editor-master`** | [`skills/documentary-editor-master`](./skills/documentary-editor-master/SKILL.md) | Montaż dual-format (16:9 & 9:16) w FFmpeg, łączenie multi-shot, sidechain ducking, nakładanie belek hook, napisy Karaoke ASS (-90ms). |
 | **`documentary-screenplay-architect`** | [`skills/documentary-screenplay-architect`](./skills/documentary-screenplay-architect/SKILL.md) | Projektowanie scenariuszy dla dowolnych tematów, budżet słów dla A-roll (14–16 słów/10s), reguły zapisu liczb i dat słownie, zero AI-klisz. |
 | **`documentary-quality-guard`** | [`skills/documentary-quality-guard`](./skills/documentary-quality-guard/SKILL.md) | 5-etapowy audyt jakościowy (QC Gates): scenariusz, weryfikacja słów kluczowych, dykcja Whisper STT, inspekcja klatek glitch-hunt, synchronizacja. |
+| **`investigative-documentary-essay`** | [`skills/investigative-documentary-essay`](./skills/investigative-documentary-essay/SKILL.md) | Standard eseju dokumentalnego i podcastu wideo (styl *Szarlatani Nauki*): wyszukiwanie autentycznych archiwaliów, animacje HTML/JS Playwright 10s, B-roll z Google Flow OmniFlash, zero zapętleń. |
 
 ---
 

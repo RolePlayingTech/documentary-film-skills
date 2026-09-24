@@ -1,13 +1,14 @@
 {
   "name": "documentary-film-skills",
-  "version": "1.1.0",
-  "description": "Uniwersalny zestaw profesjonalnych skilli i narzędzi automatyzacji dla agentów AI do kompleksowej produkcji filmów w dowolnym stylu (16:9 i 9:16 pionowy, Google Flow, ElevenLabs v3, Multi-shot B-Roll, Karaoke ASS, FFmpeg, Whisper STT).",
+  "version": "1.2.0",
+  "description": "Uniwersalny zestaw profesjonalnych skilli i narzędzi automatyzacji dla agentów AI do kompleksowej produkcji filmów w dowolnym stylu (16:9 i 9:16 pionowy, eseje śledcze / video essay, animacje HTML/JS Playwright, Google Flow, ElevenLabs v3, Multi-shot B-Roll, Karaoke ASS, FFmpeg, Whisper STT).",
   "author": "RolePlayingTech",
   "skills": [
     "documentary-screenplay-architect",
     "google-flow-director",
     "elevenlabs-voiceover-engineer",
     "documentary-editor-master",
-    "documentary-quality-guard"
+    "documentary-quality-guard",
+    "investigative-documentary-essay"
   ]
 }

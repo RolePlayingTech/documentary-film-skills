@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Technical Schematic & Telemetry Counter (10.0s @ 1080p)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #ef4444;         /* High-alert red/crimson or cyan #06b6d4 */
+    --accent-glow: rgba(239, 68, 68, 0.4);
+    --bg-dark: #0b0c10;
+    --card-bg: #141620;
+    --border-subtle: rgba(255, 255, 255, 0.12);
+  }
+
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: var(--bg-dark);
+    color: #f8fafc;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 35% 50%, var(--accent-glow) 0%, transparent 65%),
+      linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 100% 100%, 50px 50px, 50px 50px;
+    pointer-events: none;
+  }
+
+  .stage {
+    width: 1740px;
+    height: 940px;
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Left: Schematic Visual Box */
+  .schematic-box {
+    width: 700px;
+    height: 900px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .svg-canvas {
+    width: 620px;
+    height: 620px;
+    position: relative;
+  }
+
+  /* Right: Telemetry & Dossier */
+  .dossier {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    align-self: flex-start;
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  .main-title {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #ffffff;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .main-title span { color: #f87171; }
+
+  /* Hero Stat Counter Card */
+  .hero-stat-card {
+    background: rgba(18, 22, 34, 0.95);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 16px;
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  .stat-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-size: 54px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -1px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-value span { color: #f87171; font-size: 32px; font-weight: 700; margin-left: 4px; }
+
+  .stat-pill {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .breakdown-item {
+    background: rgba(18, 21, 31, 0.85);
+    border-left: 3px solid #ef4444;
+    border-radius: 8px;
+    padding: 14px 20px;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  .breakdown-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breakdown-desc {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+
+  .conclusion-bar {
+    background: rgba(15, 18, 26, 0.9);
+    border: 1px dashed rgba(239, 68, 68, 0.35);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #cbd5e1;
+    font-style: italic;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <div class="stage">
+    <!-- Left: Animated SVG Telemetry Schematic -->
+    <div class="schematic-box" id="schematic-box">
+      <svg class="svg-canvas" viewBox="0 0 600 600">
+        <defs>
+          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ef4444" stop-opacity="0.8"/>
+            <stop offset="60%" stop-color="#ef4444" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Orbit Ring 1 (outer) -->
+        <circle id="orbit-1" cx="300" cy="300" r="240" fill="none" stroke="rgba(239, 68, 68, 0.25)" stroke-width="1.5" stroke-dasharray="12 12"/>
+        
+        <!-- Orbit Ring 2 (mid) -->
+        <circle id="orbit-2" cx="300" cy="300" r="170" fill="none" stroke="rgba(239, 68, 68, 0.4)" stroke-width="2" stroke-dasharray="8 6"/>
+
+        <!-- Orbit Ring 3 (inner) -->
+        <circle id="orbit-3" cx="300" cy="300" r="100" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+
+        <!-- Radial Crosshairs -->
+        <line x1="60" y1="300" x2="540" y2="300" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <line x1="300" y1="60" x2="300" y2="540" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+
+        <!-- Central Reaction Core -->
+        <circle id="core-glow" cx="300" cy="300" r="85" fill="url(#coreGlow)"/>
+        <circle cx="300" cy="300" r="45" fill="#141620" stroke="#ef4444" stroke-width="3" filter="url(#glow)"/>
+        <circle cx="300" cy="300" r="14" fill="#ef4444"/>
+
+        <!-- Orbiting Satellites / Indicator Nodes -->
+        <circle id="sat-1" cx="300" cy="60" r="8" fill="#ffffff" filter="url(#glow)"/>
+        <circle id="sat-2" cx="470" cy="300" r="6" fill="#f87171"/>
+        <circle id="sat-3" cx="130" cy="300" r="6" fill="#f87171"/>
+
+        <!-- Technical Label overlays in SVG -->
+        <text x="300" y="305" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">ISOTOPE</text>
+        <text id="angle-readout" x="300" y="580" font-size="12" font-family="monospace" fill="#94a3b8" text-anchor="middle">RAD-226 FLUX: 100%</text>
+      </svg>
+    </div>
+
+    <!-- Right: Telemetry & Analytical Dossier -->
+    <div class="dossier">
+      <div class="badge-tag" id="badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        RAPORT FORENSYCZNY • TOKSYKOLOGIA
+      </div>
+
+      <h1 class="main-title" id="title">
+        Mechanizm Skumulowanej <span>Degradacji Tkanek</span>
+      </h1>
+
+      <div class="hero-stat-card" id="stat-card">
+        <div class="stat-left">
+          <div class="stat-label">Dawka Skumulowana (Ofiara Eben Byers)</div>
+          <div class="stat-value" id="counter-val">0<span>MBq</span></div>
+        </div>
+        <div class="stat-pill">300% DAWKI ŚMIERTELNEJ</div>
+      </div>
+
+      <div class="breakdown-list">
+        <div class="breakdown-item" id="p-1">
+          <div class="breakdown-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Mimikra Wapniowa w Układzie Kostnym
+          </div>
+          <div class="breakdown-desc">Organizm ludzki myli rad z wapniem, wbudowując radioaktywne izotopy bezpośrednio w beleczki kostne żuchwy i czaszki.</div>
+        </div>
+
+        <div class="breakdown-item" id="p-2">
+          <div class="breakdown-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Promieniowanie Alfa od Wewnątrz
+          </div>
+          <div class="breakdown-desc">Emisja cząstek alfa niszczyła szpik kostny z odległości mikrometrów, powodując martwicę kości i całkowitą anemię.</div>
+        </div>
+      </div>
+
+      <div class="conclusion-bar" id="conclusion-bar">
+        „Eben Byers wypił łącznie 1400 butelek Radithoru. Jego kości świeciły w ciemności, a ciało pochowano w ołowianej trumnie.”
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function easeInOutCubic(x) {
+      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    }
+    function easeOutCubic(x) {
+      return 1 - Math.pow(1 - x, 3);
+    }
+
+    /**
+     * Deterministic frame renderer (0 to 10000ms)
+     */
+    window.renderAtMs = function(ms) {
+      const box = document.getElementById('schematic-box');
+      const badge = document.getElementById('badge');
+      const title = document.getElementById('title');
+      const statCard = document.getElementById('stat-card');
+      const counterVal = document.getElementById('counter-val');
+      const conclusion = document.getElementById('conclusion-bar');
+      const p1 = document.getElementById('p-1');
+      const p2 = document.getElementById('p-2');
+
+      const orbit1 = document.getElementById('orbit-1');
+      const orbit2 = document.getElementById('orbit-2');
+      const coreGlow = document.getElementById('core-glow');
+      const sat1 = document.getElementById('sat-1');
+      const sat2 = document.getElementById('sat-2');
+      const sat3 = document.getElementById('sat-3');
+
+      // Phase 1 (0 to 1400ms): Centered box (offset 510px, scale 1.05)
+      // Phase 2 (1400 to 2800ms): Slide left to 0px
+      // Phase 3 (2800ms+): Telemetry reveals and remains stable until 10.0s
+      let boxX = 510;
+      let boxScale = 1.05;
+
+      if (ms <= 1400) {
+        boxX = 510;
+        boxScale = 1.05;
+      } else if (ms <= 2800) {
+        const prog = (ms - 1400) / 1400;
+        const ease = easeInOutCubic(prog);
+        boxX = 510 * (1 - ease);
+        boxScale = 1.05 - 0.05 * ease;
+      } else {
+        boxX = 0;
+        boxScale = 1.0;
+      }
+      box.style.transform = `translateX(${boxX}px) scale(${boxScale})`;
+
+      // Continuous animated rotation of SVG orbital rings
+      const rotAngle = (ms / 10000) * 360;
+      orbit1.setAttribute('transform', `rotate(${rotAngle.toFixed(2)} 300 300)`);
+      orbit2.setAttribute('transform', `rotate(${(-rotAngle * 1.5).toFixed(2)} 300 300)`);
+
+      // Breathing pulse on the core
+      const pulse = Math.sin((ms / 1000) * Math.PI * 2);
+      coreGlow.setAttribute('r', (85 + pulse * 10).toFixed(1));
+
+      // Orbiting satellites
+      const satAngle = (ms / 6000) * Math.PI * 2;
+      sat1.setAttribute('cx', (300 + Math.cos(satAngle) * 240).toFixed(1));
+      sat1.setAttribute('cy', (300 + Math.sin(satAngle) * 240).toFixed(1));
+
+      sat2.setAttribute('cx', (300 + Math.cos(-satAngle * 1.4) * 170).toFixed(1));
+      sat2.setAttribute('cy', (300 + Math.sin(-satAngle * 1.4) * 170).toFixed(1));
+
+      sat3.setAttribute('cx', (300 + Math.cos(satAngle * 1.8 + Math.PI) * 100).toFixed(1));
+      sat3.setAttribute('cy', (300 + Math.sin(satAngle * 1.8 + Math.PI) * 100).toFixed(1));
+
+      // Dossier reveal sequence:
+      // 1. Badge at 2800ms
+      if (ms > 2800) {
+        const p = Math.min(1, (ms - 2800) / 600);
+        const e = easeOutCubic(p);
+        badge.style.opacity = e;
+        badge.style.transform = `translateX(${30 * (1 - e)}px)`;
+      } else {
+        badge.style.opacity = 0;
+        badge.style.transform = 'translateX(30px)';
+      }
+
+      // 2. Title at 3200ms
+      if (ms > 3200) {
+        const p = Math.min(1, (ms - 3200) / 600);
+        const e = easeOutCubic(p);
+        title.style.opacity = e;
+        title.style.transform = `translateY(${20 * (1 - e)}px)`;
+      } else {
+        title.style.opacity = 0;
+        title.style.transform = 'translateY(20px)';
+      }
+
+      // 3. Stat Card + Number Rollup at 3700ms (rolls from 0 to 1400)
+      if (ms > 3700) {
+        const p = Math.min(1, (ms - 3700) / 600);
+        const e = easeOutCubic(p);
+        statCard.style.opacity = e;
+        statCard.style.transform = `translateX(${30 * (1 - e)}px)`;
+
+        // Animated counter
+        const countProg = Math.min(1, (ms - 3700) / 1800);
+        const countEase = easeOutCubic(countProg);
+        const currentCount = Math.round(1400 * countEase);
+        counterVal.innerHTML = `${currentCount}<span>butelek</span>`;
+      } else {
+        statCard.style.opacity = 0;
+        statCard.style.transform = 'translateX(30px)';
+        counterVal.innerHTML = `0<span>butelek</span>`;
+      }
+
+      // 4. Breakdown items staggered at 4800ms, 5400ms
+      if (ms > 4800) {
+        const p = Math.min(1, (ms - 4800) / 500);
+        const e = easeOutCubic(p);
+        p1.style.opacity = e;
+        p1.style.transform = `translateY(${15 * (1 - e)}px)`;
+      } else {
+        p1.style.opacity = 0;
+        p1.style.transform = 'translateY(15px)';
+      }
+
+      if (ms > 5400) {
+        const p = Math.min(1, (ms - 5400) / 500);
+        const e = easeOutCubic(p);
+        p2.style.opacity = e;
+        p2.style.transform = `translateY(${15 * (1 - e)}px)`;
+      } else {
+        p2.style.opacity = 0;
+        p2.style.transform = 'translateY(15px)';
+      }
+
+      // 5. Conclusion bar at 6000ms
+      if (ms > 6000) {
+        const p = Math.min(1, (ms - 6000) / 500);
+        const e = easeOutCubic(p);
+        conclusion.style.opacity = e;
+        conclusion.style.transform = `translateY(${15 * (1 - e)}px)`;
+      } else {
+        conclusion.style.opacity = 0;
+        conclusion.style.transform = 'translateY(15px)';
+      }
+    };
+  </script>
+</body>
+</html>
